@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bug-triage-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: bug-triage-api }
+  template:
+    metadata:
+      labels: { app: bug-triage-api }
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/yourorg/bug-triage-api:latest
+          ports: [{ containerPort: 8080 }]
+          env:
+            - name: MODEL_DIR
+              value: /models
+          volumeMounts:
+            - name: models
+              mountPath: /models
+      volumes:
+        - name: models
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bug-triage-svc
+spec:
+  type: ClusterIP
+  selector: { app: bug-triage-api }
+  ports:
+    - port: 80
+      targetPort: 8080

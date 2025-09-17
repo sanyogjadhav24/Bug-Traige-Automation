@@ -1,0 +1,5 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN pip install --upgrade pip && pip install pandas scikit-learn xgboost transformers torch joblib
+COPY . .
+CMD ["python", "ml/pipelines/train.py", "--data_path", "data/training.sample.csv", "--out_dir", "ml/models"]

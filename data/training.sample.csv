@@ -1,0 +1,31 @@
+bug_id,project,summary,description,category,severity,assignee
+DEM-1,DEM,Login fails on reset #0,"After password reset, users cannot log in",Improvement,Major,achalapatil2755@gmail.com
+DEM-2,DEM,Add dark mode,Feature request to support dark mode in dashboard,Improvement,Low,Unassigned
+DEM-3,DEM,Dashboard slow,Performance issue: dashboard takes >10s to load,Task,Critical,gmaroof99@gmail.com
+DEM-4,DEM,Add dark mode,Feature request to support dark mode in dashboard,Improvement,Major,jadhavsanyog.400@gmail.com
+DEM-5,DEM,Payment API error,Stripe integration fails with 500 error,Task,Major,gmaroof99@gmail.com
+DEM-6,DEM,Payment API error #5,Stripe integration fails with 500 error,Improvement,Critical,Unassigned
+DEM-7,DEM,Add dark mode,Feature request to support dark mode in dashboard,Bug,Critical,Unassigned
+DEM-8,DEM,Login fails on reset,"After password reset, users cannot log in",Bug,Critical,achalapatil2755@gmail.com
+DEM-9,DEM,Payment API error,Stripe integration fails with 500 error,Task,Minor,jadhavsanyog.400@gmail.com
+DEM-10,DEM,Add dark mode,Feature request to support dark mode in dashboard,Bug,Low,Unassigned
+DEM-11,DEM,Add dark mode #10,Feature request to support dark mode in dashboard,Bug,Low,gmaroof99@gmail.com
+DEM-12,DEM,Payment API error,Stripe integration fails with 500 error,Improvement,Major,gmaroof99@gmail.com
+DEM-13,DEM,Mobile UI not responsive,"On iPhone, buttons overlap",Task,Critical,Unassigned
+DEM-14,DEM,Payment API error,Stripe integration fails with 500 error,Improvement,Minor,gmaroof99@gmail.com
+DEM-15,DEM,Add dark mode,Feature request to support dark mode in dashboard,Improvement,Low,gmaroof99@gmail.com
+DEM-16,DEM,Dashboard slow #15,Performance issue: dashboard takes >10s to load,Improvement,Major,achalapatil2755@gmail.com
+DEM-17,DEM,Login fails on reset,"After password reset, users cannot log in",Task,Major,jadhavsanyog.400@gmail.com
+DEM-18,DEM,Payment API error,Stripe integration fails with 500 error,Bug,Minor,gmaroof99@gmail.com
+DEM-19,DEM,Login fails on reset,"After password reset, users cannot log in",Improvement,Minor,Unassigned
+DEM-20,DEM,Login fails on reset,"After password reset, users cannot log in",Bug,Major,jadhavsanyog.400@gmail.com
+DEM-21,DEM,Add dark mode #20,Feature request to support dark mode in dashboard,Bug,Low,jadhavsanyog.400@gmail.com
+DEM-22,DEM,Payment API error,Stripe integration fails with 500 error,Task,Critical,Unassigned
+DEM-23,DEM,Login fails on reset,"After password reset, users cannot log in",Task,Critical,gmaroof99@gmail.com
+DEM-24,DEM,Dashboard slow,Performance issue: dashboard takes >10s to load,Task,Critical,Unassigned
+DEM-25,DEM,Dashboard slow,Performance issue: dashboard takes >10s to load,Task,Critical,jadhavsanyog.400@gmail.com
+DEM-26,DEM,Add dark mode #25,Feature request to support dark mode in dashboard,Task,Critical,gmaroof99@gmail.com
+DEM-27,DEM,Login fails on reset,"After password reset, users cannot log in",Improvement,Low,jadhavsanyog.400@gmail.com
+DEM-28,DEM,Dashboard slow,Performance issue: dashboard takes >10s to load,Task,Critical,achalapatil2755@gmail.com
+DEM-29,DEM,Mobile UI not responsive,"On iPhone, buttons overlap",Bug,Major,gmaroof99@gmail.com
+DEM-30,DEM,Payment API error,Stripe integration fails with 500 error,Improvement,Low,Unassigned
