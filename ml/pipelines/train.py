@@ -1,4 +1,15 @@
 import argparse, os, joblib
+import sys
+from pathlib import Path
+
+# When this script is executed as `python ml/pipelines/train.py` the
+# default sys.path[0] is `ml/pipelines`, which prevents top-level package
+# imports like `ml.features` from resolving. Ensure the repository root is
+# on sys.path so `import ml.features.text` works both when run as a module
+# and when run directly as a script.
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -24,6 +35,22 @@ def embed_batch(texts, tok, model, max_len=160):
 
 def main(data_path: str, out_dir: str):
     os.makedirs(out_dir, exist_ok=True)
+    # support passing a directory (e.g. --data_path data/)
+    if os.path.isdir(data_path):
+        # prefer a file named training.sample.csv if present
+        candidate = os.path.join(data_path, "training.sample.csv")
+        if os.path.isfile(candidate):
+            data_path = candidate
+            print(f"Using data file: {data_path}")
+        else:
+            # fall back to first CSV in directory
+            import glob
+            csvs = sorted(glob.glob(os.path.join(data_path, "*.csv")))
+            if not csvs:
+                raise FileNotFoundError(f"No CSV files found in directory: {data_path}")
+            data_path = csvs[0]
+            print(f"Using data file: {data_path}")
+
     df = pd.read_csv(data_path)
     df["text"] = (df["summary"].fillna("") + "\n" + df["description"].fillna("")).map(clean_text)
     df = df[(df["text"].str.len() > 10) & df["category"].notna() & df["severity"].notna() & df["assignee"].notna()].copy()

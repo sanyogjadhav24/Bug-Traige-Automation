@@ -61,13 +61,27 @@ function App() {
   const handlePredict = async () => {
     setLoading(true);
     setJiraResult(null);
+    // refresh Jira permission state every prediction
+    try {
+      const perm = await axios.get("http://127.0.0.1:8000/debug/jira_check");
+      setJiraResult(null);
+      // store permission on result object for UI
+      // we'll merge into result after prediction returns
+      window.__jira_perm = perm.data && perm.data.can_create_issues;
+    } catch (e) {
+      // ignore; default to false
+      window.__jira_perm = false;
+    }
     try {
       const res = await axios.post("http://127.0.0.1:8000/predict", {
         project,
         summary,
         description,
       });
-      setResult(res.data);
+      // attach permission info
+      const data = res.data || {};
+      data.jira_can_create = !!window.__jira_perm;
+      setResult(data);
     } catch (err) {
       setResult({ error: "Prediction failed. Please check if the API server is running." });
     }
@@ -315,69 +329,80 @@ function App() {
                     </Card>
 
                     {/* Jira Integration */}
-                    {result.jira_suggested && (
-                      <Card elevation={2} sx={{ borderRadius: 2, bgcolor: "warning.50" }}>
-                        <CardContent sx={{ p: 3 }}>
-                          <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "warning.main" }}>
-                            🎫 Jira Integration
-                          </Typography>
-                          <Divider sx={{ mb: 2 }} />
-                          
-                          <Alert severity="info" sx={{ mb: 2, borderRadius: 2 }}>
-                            Ready to create Jira issue with the predicted category, severity, and assignee.
-                          </Alert>
+                    <Card elevation={2} sx={{ borderRadius: 2, bgcolor: result.jira_can_create ? "success.50" : "grey.50" }}>
+                      <CardContent sx={{ p: 3 }}>
+                        <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: result.jira_can_create ? "success.main" : "text.secondary" }}>
+                          🎫 Jira Integration
+                        </Typography>
+                        <Divider sx={{ mb: 2 }} />
+                        
+                        {result.jira_can_create ? (
+                          <>
+                            <Alert severity="success" sx={{ mb: 2, borderRadius: 2 }}>
+                              Ready to create Jira issue with AI predictions applied.
+                            </Alert>
 
-                          <Button
-                            variant="contained"
-                            color="warning"
-                            fullWidth
-                            size="large"
-                            onClick={handleCreateJira}
-                            disabled={jiraLoading}
-                            sx={{ 
-                              py: 1.5, 
-                              borderRadius: 2, 
-                              fontSize: "1.1rem",
-                              fontWeight: "bold",
-                              boxShadow: 2
-                            }}
-                          >
-                            {jiraLoading ? (
-                              <>
-                                <CircularProgress size={24} sx={{ mr: 1, color: "white" }} />
-                                Creating Issue...
-                              </>
-                            ) : (
-                              "🚀 Create Jira Issue"
-                            )}
-                          </Button>
-
-                          {jiraResult && (
-                            <Box sx={{ mt: 2 }}>
-                              {jiraResult.success ? (
-                                <Alert severity="success" sx={{ borderRadius: 2 }}>
-                                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-                                    ✅ Jira Issue Created Successfully!
-                                  </Typography>
-                                  <Typography variant="body2">
-                                    Issue Key: <strong>{jiraResult.issue_key}</strong>
-                                  </Typography>
-                                </Alert>
+                            <Button
+                              variant="contained"
+                              color="success"
+                              fullWidth
+                              size="large"
+                              onClick={handleCreateJira}
+                              disabled={jiraLoading}
+                              sx={{ 
+                                py: 1.5, 
+                                borderRadius: 2, 
+                                fontSize: "1.1rem",
+                                fontWeight: "bold",
+                                boxShadow: 2
+                              }}
+                            >
+                              {jiraLoading ? (
+                                <>
+                                  <CircularProgress size={24} sx={{ mr: 1, color: "white" }} />
+                                  Creating Issue...
+                                </>
                               ) : (
-                                <Alert severity="error" sx={{ borderRadius: 2 }}>
-                                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-                                    ❌ Failed to Create Jira Issue
-                                  </Typography>
-                                  <Typography variant="body2">
-                                    {jiraResult.error || "Unknown error occurred"}
-                                  </Typography>
-                                </Alert>
+                                "🚀 Create Jira Issue"
                               )}
-                            </Box>
-                          )}
-                        </CardContent>
-                      </Card>
-                    )}
+                            </Button>
+                          </>
+                        ) : (
+                          <Alert severity="warning" sx={{ borderRadius: 2 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                              Jira Integration Unavailable
+                            </Typography>
+                            <Typography variant="body2">
+                              Server configuration needed. Contact administrator to enable Jira issue creation.
+                            </Typography>
+                          </Alert>
+                        )}
+
+                        {jiraResult && (
+                          <Box sx={{ mt: 2 }}>
+                            {jiraResult.success ? (
+                              <Alert severity="success" sx={{ borderRadius: 2 }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                                  ✅ Jira Issue Created Successfully!
+                                </Typography>
+                                <Typography variant="body2">
+                                  Issue Key: <strong>{jiraResult.issue_key}</strong>
+                                </Typography>
+                              </Alert>
+                            ) : (
+                              <Alert severity="error" sx={{ borderRadius: 2 }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                                  ❌ Failed to Create Jira Issue
+                                </Typography>
+                                <Typography variant="body2">
+                                  {jiraResult.error || "Unknown error occurred"}
+                                </Typography>
+                              </Alert>
+                            )}
+                          </Box>
+                        )}
+                      </CardContent>
+                    </Card>
 
                     {/* Model Info */}
                     {/* <Card elevation={1} sx={{ borderRadius: 2, bgcolor: "grey.50" }}>
